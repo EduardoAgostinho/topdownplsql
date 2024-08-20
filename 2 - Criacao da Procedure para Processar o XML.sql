@@ -1,3 +1,5 @@
+USE [TopDown]
+GO
 CREATE PROCEDURE ProcessOrderXML
     @OrderXML XML
 AS
@@ -7,7 +9,7 @@ BEGIN
             @OrderID INT;
     
     -- Extrair os dados do pedido (CustomerName e OrderDate)
-    SET @CustomerName = @OrderXML.value('(/Order/CustomerName)[1]', 'VARCHAR(100)');
+    SET @CustomerName = @OrderXML.value('(/Order/CustomerName)[1]', 'VARCHAR(50)');
     SET @OrderDate = @OrderXML.value('(/Order/OrderDate)[1]', 'DATE');
 
     -- Inserir o pedido na tabela Orders
@@ -21,13 +23,13 @@ BEGIN
     INSERT INTO OrderItems (OrderID, ProductName, Quantity, Price)
     SELECT
         @OrderID,
-        Item.value('(ProductName)[1]', 'VARCHAR(100)'),
+        Item.value('(ProductName)[1]', 'VARCHAR(60)'),
         Item.value('(Quantity)[1]', 'INT'),
         Item.value('(Price)[1]', 'DECIMAL(10, 2)')
     FROM @OrderXML.nodes('/Order/Items/Item') AS T(Item)
     WHERE NOT EXISTS (
         SELECT 1 FROM OrderItems
-        WHERE OrderID = @OrderID AND ProductName = Item.value('(ProductName)[1]', 'VARCHAR(255)')
+        WHERE OrderID = @OrderID AND ProductName = Item.value('(ProductName)[1]', 'VARCHAR(60)')
     );
 
     -- Se houver duplicatas, retorne um erro

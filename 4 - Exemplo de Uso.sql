@@ -1,3 +1,5 @@
+USE [TopDown]
+GO
 DECLARE @OrderXML XML = '
 <Order>
     <CustomerName>John Doe</CustomerName>

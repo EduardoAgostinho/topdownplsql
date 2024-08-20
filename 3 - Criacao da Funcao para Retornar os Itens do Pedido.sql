@@ -1,3 +1,5 @@
+USE [TopDown]
+GO
 CREATE FUNCTION GetOrderItems(@OrderID INT)
 RETURNS TABLE
 AS
